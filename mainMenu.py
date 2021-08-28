@@ -1,4 +1,4 @@
- import pygame, random, time
+import pygame, random, time
 from random import sample
 from copy import deepcopy
 from sudokuGen import * # contains functions used to create and solve boards that will be given to the user 

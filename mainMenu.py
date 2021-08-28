@@ -1,24 +1,15 @@
-import pygame, random, time
+ import pygame, random, time
 from random import sample
 from copy import deepcopy
 from sudokuGen import * # contains functions used to create and solve boards that will be given to the user 
 
 class Grid:
     # creates the grid Sudoku is played on
-    def __init__(self, rows, cols, width, height, win, diff):
+    def __init__(self, rows, cols, width, height, win, board):
         # constructor
         self.rows = rows
         self.cols = cols # rows and cols for board
-        # difficulty selection
-        if diff == 1: # easy
-            self.cubes = [[Cube(boardE[i][j], i, j, width, height) for j in range(cols)] for i in range(rows)]
-        if diff == 2: # medium
-            self.cubes = [[Cube(boardM[i][j], i, j, width, height) for j in range(cols)] for i in range(rows)]
-        if diff == 3: # hard
-            self.cubes = [[Cube(boardH[i][j], i, j, width, height) for j in range(cols)] for i in range(rows)]
-        if diff == 4: # impossible
-            self.cubes = [[Cube(boardI[i][j], i, j, width, height) for j in range(cols)] for i in range(rows)]
-        
+        self.cubes = [[Cube(board[i][j], i, j, width, height) for j in range(cols)] for i in range(rows)]
         self.width = width
         self.height = height # width and height of board
         self.model = None # updates the board
@@ -267,24 +258,25 @@ def formatTime(secs):
         mat = " " + str(minute) + ":" + str(sec) 
     return mat
 
+def formMake(difficulty):
+    # creates and returns board of user selected difficulty
+    board = format(maker(difficulty)) # difficulty is the amount of blank spaces on the board, the more blank spaces, the harder it is
+    return board
+
 def sudGame(difficulty):
     # suduoku game
-    global boardE, boardM, boardH, boardI # creates global boards of varying difficulty so they can be used in all functions and can be reset/randomized
-    boardE = format(maker(44))
-    boardM = format(maker(50)) # int passed is the amount of blank spaces on the board
-    boardH = format(maker(58)) # the more blank spaces, the harder it is
-    boardI = format(maker(64))
     win = pygame.display.set_mode((540,600))  # game window
-    board = Grid(9, 9, 540, 540, win, difficulty) # calls Grid class to create a board
+    grid = formMake(difficulty) 
+    board = Grid(9, 9, 540, 540, win, grid) # calls Grid class to create a board
     
     # change caption based on difficulty
-    if difficulty == 1:
+    if difficulty == 44:
         pygame.display.set_caption('Sudoku - Easy')
-    elif difficulty == 2:
+    elif difficulty == 50:
         pygame.display.set_caption('Sudoku - Medium')
-    elif difficulty == 3:
+    elif difficulty == 58:
         pygame.display.set_caption('Sudoku - Hard')
-    elif difficulty == 4:
+    elif difficulty == 64:
         pygame.display.set_caption('Sudoku - Impossible')
 
     key = None # key pressed by user
@@ -394,13 +386,13 @@ def diffMenu():
             #checks if a mouse is clicked 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if 280 <= mouse[0] <= 420 and 220 <= mouse[1] <= 260: 
-                    sudGame(1) # easy
+                    sudGame(44) # easy
                 elif 280 <= mouse[0] <= 420 and 320 <= mouse[1] <= 360: 
-                    sudGame(2) # medium
+                    sudGame(50) # medium
                 elif 280 <= mouse[0] <= 420 and 420 <= mouse[1] <= 460: 
-                    sudGame(3) # hard
+                    sudGame(58) # hard
                 elif 280 <= mouse[0] <= 420 and 520 <= mouse[1] <= 560:
-                    sudGame(4) # impossible
+                    sudGame(64) # impossible
                 elif 280 <= mouse[0] <= 420 and 620 <= mouse[1] <= 660:
                     pygame.quit() # quit
 
